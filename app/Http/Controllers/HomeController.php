@@ -70,12 +70,6 @@ class HomeController extends Controller
         return view('admin.index', compact('data', 'request'));
     }
 
-
-
-
-
-
-
     public function create()
     {
         // Ambil semua data jurusan dari tabel jurusan

@@ -12,59 +12,50 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Mahasiswa</h1>
-                </div><!-- /.col -->
+                    <h1 class="m-0">Dosen</h1>
+                </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Data Mahasiswa</li>
+                        <li class="breadcrumb-item active">Data Dosen</li>
                     </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <a href="{{ route('admin.mahasiswa.create') }}" class="btn btn-primary mb-3">+ Tambah Data</a>
+                    <a href="{{ route('admin.dosen.create') }}" class="btn btn-primary mb-3">+ Tambah Data</a>
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Tabel Data Mahasiswa</h3>
+                            <h3 class="card-title">Tabel Data Dosen/h3>
                         </div>
-                        <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap" id="index">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>NIM</th>
+                                        <th>NIDN</th>
                                         <th>Nama</th>
-                                        <th>Jurusan</th>
-                                        <th>Angkatan</th>
-                                        <th>No Telepon</th>
                                         <th>Email</th>
+                                        <th>No Telepon</th>
                                         <th>Photo</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Data akan dimasukkan oleh DataTables -->
+                                    <!-- Data will be inserted by DataTables -->
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
             </div>
-            <!-- /.row (main row) -->
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
-    <!-- /.content -->
 </div>
 
 <!-- Modal -->
@@ -79,10 +70,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Apakah kamu yakin ingin hapus data mahasiswa <b>{{ $item->name }}</b></p>
+                <p>Apakah kamu yakin ingin hapus data dosen <b>{{ $item->nama }}</b></p>
             </div>
             <div class="modal-footer justify-content-between">
-                <form action="{{ route('admin.mahasiswa.delete',['id'=>$item->id]) }}" method="POST">
+                <form action="{{ route('admin.dosen.delete',['id'=>$item->id]) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -90,9 +81,7 @@
                 </form>
             </div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
 @endforeach
 
@@ -106,34 +95,30 @@
             processing:true,
             serverSide:true,
             ajax:{
-                url:"{{ route('admin.index') }}",
+                url:"{{ route('admin.dosen.index') }}",
                 data: function (d) {
-                    // Tambahan data dapat dimasukkan di sini jika diperlukan
+                    // Additional data can be added here if needed
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'nim', name: 'nim' },
-                { data: 'name', name: 'name' },
-                { data: 'jurusan', name: 'jurusan' },
-                { data: 'angkatan', name: 'angkatan' },
-                { data: 'no_telepon', name: 'no_telepon' },
+                { data: 'nidn', name: 'nidn' },
+                { data: 'nama', name: 'nama' },
                 { data: 'email', name: 'email' },
+                { data: 'no_telepon', name: 'no_telepon' },
                 { data: 'image', name: 'image', orderable: false, searchable: false },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
-            // Set nomor urutan
             createdRow: function (row, data, index) {
-                var pageInfo = $('#index').DataTable().page.info(); // Informasi halaman DataTables
-                var pageNumber = pageInfo.page; // Nomor halaman saat ini
-                var pageSize = pageInfo.length; // Jumlah baris per halaman
-                $('td', row).eq(0).html(pageNumber * pageSize + index + 1); // Hitung nomor urutan
+                var pageInfo = $('#index').DataTable().page.info();
+                var pageNumber = pageInfo.page;
+                var pageSize = pageInfo.length;
+                $('td', row).eq(0).html(pageNumber * pageSize + index + 1);
             }
         });
     });
 </script>
 
-<!-- Tidak diperlukan jika tidak menggunakan DataTables -->
 <script>
     $(document).ready(function() {
         var deleteId;
@@ -144,15 +129,13 @@
         
         $('#deleteButton').click(function() {
             $.ajax({
-                url: '/admin/mahasiswa/' + deleteId,
+                url: '/admin/dosen/' + deleteId,
                 type: 'DELETE',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function(data) {
-                    // Redirect or reload the page
                     window.location.reload();
                 },
                 error: function(xhr, status, error) {
-                    // Handle error
                     console.error(xhr.responseText);
                 }
             });

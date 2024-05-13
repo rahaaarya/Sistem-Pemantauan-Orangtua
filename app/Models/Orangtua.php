@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Orangtua extends Model
 {
     use HasFactory;
-
+    protected $table = 'orangtua';
+    protected $primaryKey = 'id_orangtua';
     protected $fillable = [
         'nama_ayah',
         'nama_ibu',

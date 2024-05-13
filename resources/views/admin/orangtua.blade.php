@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('css')
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
 @endsection
 
 @section('content')
@@ -12,12 +12,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Mahasiswa</h1>
+                    <h1 class="m-0">Data Orang Tua</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Data Mahasiswa</li>
+                        <li class="breadcrumb-item active">Data Orang Tua</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -30,24 +30,25 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <a href="{{ route('admin.mahasiswa.create') }}" class="btn btn-primary mb-3">+ Tambah Data</a>
+                    <!-- Tombol untuk menambah data orang tua -->
+                    <a href="{{ route('admin.orangtua.create') }}" class="btn btn-primary mb-3">+ Tambah Data</a>
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Tabel Data Mahasiswa</h3>
+                            <h3 class="card-title">Data Orang Tua</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap" id="index">
+                            <table class="table table-hover text-nowrap" id="orangtua">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>NIM</th>
-                                        <th>Nama</th>
-                                        <th>Jurusan</th>
-                                        <th>Angkatan</th>
-                                        <th>No Telepon</th>
+                                        <th>Nama Ayah</th>
+                                        <th>Nama Ibu</th>
+                                        <th>Pekerjaan Ayah</th>
+                                        <th>Pekerjaan Ibu</th>
                                         <th>Email</th>
-                                        <th>Photo</th>
+                                        <th>No Telepon</th>
+                                        <th>Hubungan</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -68,8 +69,7 @@
 </div>
 
 <!-- Modal -->
-@foreach($data as $item)
-<div class="modal fade" id="modal-hapus{{ $item->id }}">
+<div class="modal fade" id="modal-hapus">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -79,10 +79,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Apakah kamu yakin ingin hapus data mahasiswa <b>{{ $item->name }}</b></p>
+                <p>Apakah kamu yakin ingin hapus data orang tua ini? </p>
             </div>
             <div class="modal-footer justify-content-between">
-                <form action="{{ route('admin.mahasiswa.delete',['id'=>$item->id]) }}" method="POST">
+                <form id="deleteForm" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -94,7 +94,6 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-@endforeach
 
 @endsection
 
@@ -102,62 +101,55 @@
 <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
 <script>
     $(document).ready(function(){
-        $('#index').DataTable({
+        $('#orangtua').DataTable({
             processing:true,
             serverSide:true,
             ajax:{
-                url:"{{ route('admin.index') }}",
+                url:"{{ route('admin.orangtua.index') }}",
                 data: function (d) {
                     // Tambahan data dapat dimasukkan di sini jika diperlukan
                 }
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                { data: 'nim', name: 'nim' },
-                { data: 'name', name: 'name' },
-                { data: 'jurusan', name: 'jurusan' },
-                { data: 'angkatan', name: 'angkatan' },
-                { data: 'no_telepon', name: 'no_telepon' },
+                { data: 'nama_ayah', name: 'nama_ayah' },
+                { data: 'nama_ibu', name: 'nama_ibu' },
+                { data: 'pekerjaan_ayah', name: 'pekerjaan_ayah' },
+                { data: 'pekerjaan_ibu', name: 'pekerjaan_ibu' },
                 { data: 'email', name: 'email' },
-                { data: 'image', name: 'image', orderable: false, searchable: false },
+                { data: 'no_telepon', name: 'no_telepon' },
+                { data: 'hubungan', name: 'hubungan' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             // Set nomor urutan
             createdRow: function (row, data, index) {
-                var pageInfo = $('#index').DataTable().page.info(); // Informasi halaman DataTables
+                var pageInfo = $('#orangtua').DataTable().page.info(); // Informasi halaman DataTables
                 var pageNumber = pageInfo.page; // Nomor halaman saat ini
                 var pageSize = pageInfo.length; // Jumlah baris per halaman
-                $('td', row).eq(0).html(pageNumber * pageSize + index + 1); // Hitung nomor urutan
+                $('td', row).eq(0).html(pageNumber * pageSize + index + 1);
             }
         });
-    });
-</script>
 
-<!-- Tidak diperlukan jika tidak menggunakan DataTables -->
-<script>
-    $(document).ready(function() {
+        // Mengatur ID data yang akan dihapus
         var deleteId;
-        
-        $('.delete-btn').click(function() {
-            deleteId = $(this).data('id');
+        $('#modal-hapus').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            deleteId = button.data('id');
         });
-        
-        $('#deleteButton').click(function() {
+
+        // Submit form untuk menghapus data
+        $('#deleteForm').submit(function(e){
+            e.preventDefault();
             $.ajax({
-                url: '/admin/mahasiswa/' + deleteId,
+                url: "{{ route('admin.orangtua.delete', 'id_orangtua') }}".replace('id_orangtua', deleteId),
                 type: 'DELETE',
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                success: function(data) {
-                    // Redirect or reload the page
-                    window.location.reload();
-                },
-                error: function(xhr, status, error) {
-                    // Handle error
-                    console.error(xhr.responseText);
+                data: $(this).serialize(),
+                success: function(data){
+                    // Refresh halaman setelah penghapusan data
+                    location.reload();
                 }
             });
         });
     });
 </script>
-
 @endsection

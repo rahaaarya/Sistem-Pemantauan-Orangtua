@@ -224,9 +224,9 @@
 
           <li class="nav-item">
             <a href="{{ 'admin.dashboard' }}" class="nav-link">
-              <i class="nav-icon fa-solid fa-people-roof"></i>
+              <i class="nav-icon fa-solid fa-database"></i>
               <p>
-                Manamejemen User
+                Manamejemen Data
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -235,6 +235,18 @@
                 <a href="{{ route('admin.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Mahasiswa</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.orangtua.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Orangtua</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('admin.dosen.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Dosen</p>
                 </a>
               </li>
               <li class="nav-item">
